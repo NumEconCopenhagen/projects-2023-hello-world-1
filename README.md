@@ -1,4 +1,4 @@
-# \[Group name\]
+# \[HELLO-WORLD-1\]
 
 **Group members:**
 - A William Chen
