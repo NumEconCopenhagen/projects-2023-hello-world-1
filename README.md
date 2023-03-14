@@ -1,9 +1,9 @@
 # \[Group name\]
 
 **Group members:**
-- A
-- B
-- C
+- A William Chen
+- B Andreas Skeem
+- C Priyanka
 
 This repository contains  
 1. Inaugural project. 
