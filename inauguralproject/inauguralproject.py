@@ -57,7 +57,7 @@ class HouseholdSpecializationModelClass:
         elif par.sigma ==0:
             H = np.minimum(HM,HF)
         else: 
-            H =((1-par.alpha)**HM**((par.sigma-1)/par.sigma)+par.alpha*HF**((par.sigma-1)/par.sigma))**((par.sigma/(par.sigma-1)))
+            H =((1-par.alpha)*HM**((par.sigma-1)/par.sigma)+par.alpha*HF**((par.sigma-1)/par.sigma))**((par.sigma/(par.sigma-1)))
 
         # c. total consumption utility
         Q = C**par.omega*H**(1-par.omega)
