@@ -5,6 +5,9 @@ from scipy import optimize
 
 import pandas as pd 
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize_scalar
+
+
 
 class HouseholdSpecializationModelClass:
 
@@ -23,16 +26,18 @@ class HouseholdSpecializationModelClass:
 
         # c. household production
         par.alpha = 0.5
-        par.sigma = 1.0
+        par.sigma = 1
 
         # d. wages
         par.wM = 1.0
         par.wF = 1.0
         par.wF_vec = np.linspace(0.8,1.2,5)
+        
 
         # e. targets
         par.beta0_target = 0.4
         par.beta1_target = -0.1
+
 
         # f. solution
         sol.LM_vec = np.zeros(par.wF_vec.size)
@@ -42,6 +47,7 @@ class HouseholdSpecializationModelClass:
 
         sol.beta0 = np.nan
         sol.beta1 = np.nan
+
     def calc_utility(self,LM,HM,LF,HF):
         """ calculate utility """
 
@@ -53,11 +59,11 @@ class HouseholdSpecializationModelClass:
 
         # b. home production
         if par.sigma == 1:
-            H = HM**(1-par.alpha)*HF**(par.alpha)
-        elif par.sigma ==0:
+            H = HM**(1-par.alpha)*HF**par.alpha
+        elif par.sigma == 0: 
             H = np.minimum(HM,HF)
-        else: 
-            H =((1-par.alpha)*HM**((par.sigma-1)/par.sigma+1e-10)+par.alpha*HF**((par.sigma-1)/par.sigma+1e-10))**((par.sigma/(par.sigma+1e-10-1)))
+        else:
+            H =((1-par.alpha)*HM**((par.sigma-1)/par.sigma+1e-10)+par.alpha*HF**((par.sigma-1)/par.sigma+1e-10))**((par.sigma/(par.sigma+1e-10-1))) 
 
         # c. total consumption utility
         Q = C**par.omega*H**(1-par.omega)
@@ -101,6 +107,8 @@ class HouseholdSpecializationModelClass:
         opt.HM = HM[j]
         opt.LF = LF[j]
         opt.HF = HF[j]
+        
+        
 
         # e. print
         if do_print:
@@ -108,8 +116,9 @@ class HouseholdSpecializationModelClass:
                 print(f'{k} = {v:6.4f}')
 
         return opt
+        
 
-    def solve(self,do_print=False):
+    def solve_continue(self,do_print=False):
         """ solve model continously """
         par = self.par
         sol = self.sol
@@ -139,12 +148,11 @@ class HouseholdSpecializationModelClass:
             for k, v in opt.__dict__.items():
                 print(f'{k} = {v:6.4f}')
 
-        return opt  
-
+        return opt
+    
     def solve_wF_vec(self,discrete=False):
         """ solve model for vector of female wages """
-        
-        pass
+    
 
     def run_regression(self):
         """ run regression """
@@ -156,8 +164,11 @@ class HouseholdSpecializationModelClass:
         y = np.log(sol.HF_vec/sol.HM_vec)
         A = np.vstack([np.ones(x.size),x]).T
         sol.beta0,sol.beta1 = np.linalg.lstsq(A,y,rcond=None)[0]
+
+        return sol
+
     
     def estimate(self,alpha=None,sigma=None):
-        """ estimate alpha and sigma """
+        """ estimate alpha and sigma """    
 
         pass
