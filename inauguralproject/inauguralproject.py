@@ -111,12 +111,39 @@ class HouseholdSpecializationModelClass:
 
     def solve(self,do_print=False):
         """ solve model continously """
+        par = self.par
+        sol = self.sol
+        opt = SimpleNamespace()
 
-        pass    
+        # objective function to minimize (we want to maximize utility, so we minimize the negative of it)
+        obj_func = lambda x: -self.calc_utility(x[0], x[1], x[2], x[3])
+
+        # constraints (time constraints for both partners)
+        cons = ({'type': 'ineq', 'fun': lambda x: 24 - x[0] - x[1]},
+                {'type': 'ineq', 'fun': lambda x: 24 - x[2] - x[3]})
+
+        # bounds (discrete bounds between 0 to 24)
+        bounds = [(0, 24), (0, 24), (0, 24), (0, 24)]
+
+        # initial guess
+        x0 = np.array([12, 12, 12, 12])
+
+        # solve using SLSQP
+        res = optimize.minimize(obj_func, x0, bounds=bounds, constraints=cons, method='SLSQP')
+
+        # store results
+        opt.LM, opt.HM, opt.LF, opt.HF = res.x
+
+        # print results
+        if do_print:
+            for k, v in opt.__dict__.items():
+                print(f'{k} = {v:6.4f}')
+
+        return opt  
 
     def solve_wF_vec(self,discrete=False):
         """ solve model for vector of female wages """
-
+        
         pass
 
     def run_regression(self):
