@@ -6,8 +6,8 @@ The **results** of the project can be seen from running [dataproject1.ipynb].
 
 We apply the **following datasets** that can be found under the subfolder data:
  
-1. dataX.csv (*source*) 
-1. dataY.csv (*source*)
+1. alconsp.xlsx (https://ourworldindata.org/alcohol-consumption) 
+1. lifeexp.xlsx (https://ourworldindata.org/life-expectancy)
 
 **Dependencies:** Apart from a standard Anaconda Python 3 installation, the project requires the following installations:
 
