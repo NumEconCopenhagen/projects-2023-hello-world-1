@@ -1,6 +1,6 @@
 # Model analysis project
 
-Our project is titled **PROJECT TITLE** and is about EXPLAIN.
+In our project we extend the OLG model to provide insights into how the pandemic affects the size and composition of the population, as well as its implications for various economic and social outcomes.
 
 The **results** of the project can be seen from running [modelproject.ipynb](modelproject.ipynb).
 
