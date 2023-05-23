@@ -124,7 +124,7 @@ class HouseholdSpecializationModelClass:
         sol = self.sol
         opt = SimpleNamespace()
 
-        # objective function to minimize (we want to maximize utility, so we minimize the negative of it)
+        # objective function to minimize ( minimize the negative of the objective function to maximize utility)
         obj_func = lambda x: -self.calc_utility(x[0], x[1], x[2], x[3])
 
         # constraints (time constraints for both partners)
@@ -137,8 +137,8 @@ class HouseholdSpecializationModelClass:
         # initial guess
         x0 = np.array([12, 12, 12, 12])
 
-        # solve using SLSQP
-        res = optimize.minimize(obj_func, x0, bounds=bounds, constraints=cons, method='SLSQP')
+        # solve using Nelder-Mead method
+        res = optimize.minimize(obj_func, x0, bounds=bounds, constraints=cons, method='Nelder-Mead')
 
         # store results
         opt.LM, opt.HM, opt.LF, opt.HF = res.x
