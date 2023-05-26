@@ -4,7 +4,7 @@ Our project is titled **Alcohol Consumption and Life expectency** and is an anal
 
 The **results** of the project can be seen from running [dataproject1.ipynb].
 
-We apply the **following datasets** that can be found under the subfolder data:
+We apply the **following datasets** that can be found under the subfolder 'data':
  
 1. alconsp.xlsx (https://ourworldindata.org/alcohol-consumption) 
 1. lifeexp.xlsx (https://ourworldindata.org/life-expectancy)
