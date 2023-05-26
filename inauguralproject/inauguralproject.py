@@ -152,17 +152,19 @@ class HouseholdSpecializationModelClass:
   
 
     def run_regression(self):
-        """ run regression """
-
+        # ensure that the model is solved before running the regression
         par = self.par
-        sol = self.sol
+        for i, wF in enumerate(par.wF_vec):
+            par.wF = wF
+            sol_ = self.solve_continue() # or self.solve_discrete()
+            self.sol.LM_vec[i], self.sol.HM_vec[i], self.sol.LF_vec[i], self.sol.HF_vec[i] = sol_.LM, sol_.HM, sol_.LF, sol_.HF
 
-        x = np.log(par.wF_vec)
-        y = np.log(sol.HF_vec/sol.HM_vec)
+        y = np.log(self.sol.HF_vec/self.sol.HM_vec)
+        x = np.log(par.wF_vec/par.wM)
         A = np.vstack([np.ones(x.size),x]).T
-        sol.beta0,sol.beta1 = np.linalg.lstsq(A,y,rcond=None)[0]
+        self.sol.beta0, self.sol.beta1 = np.linalg.lstsq(A,y,rcond=None)[0]
 
-        return sol
+        return self.sol
 
     def utility_nonconstantwages(self, LM, HM, LF, HF):
         """Calculate utility"""
@@ -287,7 +289,7 @@ class HouseholdSpecializationModelClass:
                 best_beta1 = self.sol.beta1
 
         # Print the best results
-        print(f"Best Sigma: {best_sigma}")
-        print(f"Best Beta0: {best_beta0}")
-        print(f"Best Beta1: {best_beta1}")
-        print(f"Best Residual: {best_res}")
+       # print(f"Best Sigma: {best_sigma}")
+       # print(f"Best Beta0: {best_beta0}")
+       # print(f"Best Beta1: {best_beta1}")
+       # print(f"Best Residual: {best_res}")
