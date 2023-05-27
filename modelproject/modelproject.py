@@ -45,8 +45,8 @@ class OLGModelClass():
         # e. population growth and survival probability 
         par.p = np.full(par.simT, 0.95)  # survival probability
         par.n = 0.02  # population growth rate
-        # adjust survival probability for period 10-20
-        par.p[10:20] = 0.6
+        par.exp_p = np.concatenate(([0.95, 0.95], par.p))
+
 
         # f. population
         par.pop_initial = 1  # initial young population
@@ -61,7 +61,7 @@ class OLGModelClass():
         sim = self.sim
 
         # a. list of variables
-        household = ['C1','C2']
+        household = ['C1','C2', 'I', 's']
         firm = ['K','Y','K_lag']
         prices = ['w','rk','rb','r','rt']
         government = ['G','T','B','balanced_budget','B_lag']
@@ -114,6 +114,8 @@ class OLGModelClass():
             obj = lambda s: calc_euler_error(s,par,sim,t=t)
             result = optimize.root_scalar(obj,bracket=(s_min,s_max),method='bisect')
             s = result.root
+
+            sim.s[t] = s
 
             # v. simulate after s
             simulate_after_s(par,sim,t,s)
@@ -177,7 +179,7 @@ def calc_euler_error(s,par,sim,t):
 
     # c. Euler equation
     LHS = sim.C1[t]**(-par.sigma)
-    RHS = par.p[t+1] * (1+sim.rt[t+1])*par.beta * sim.C2[t+1]**(-par.sigma)
+    RHS = par.exp_p[t] * (1+sim.rt[t+1])*par.beta * sim.C2[t+1]**(-par.sigma)
 
     return LHS-RHS
 
@@ -217,7 +219,7 @@ def simulate_before_s(par,sim,t):
     sim.rt[t] = (1-par.tau_r)*sim.r[t] # after-tax return
 
     # c. consumption
-    sim.C2[t] = (1 + sim.rt[t]) * (sim.K_lag[t] + sim.B_lag[t]) * par.p[t]
+    sim.C2[t] = (1 + sim.rt[t]) * (sim.K_lag[t] + sim.B_lag[t])
 
     # d. government
     sim.T[t] = par.tau_r*sim.r[t]*(sim.K_lag[t]+sim.B_lag[t]) + par.tau_w*sim.w[t]
@@ -235,4 +237,5 @@ def simulate_after_s(par,sim,t,s):
 
     # b. end-of-period stocks
     I = sim.Y[t] - sim.C1[t] - sim.C2[t] - sim.G[t]
-    sim.K[t] = (1 - par.delta) * sim.K_lag[t] + I - sim.K_lag[t] * (1 - par.p[t])
+    sim.I[t] = I
+    sim.K[t] = (1 - par.delta) * sim.K_lag[t] + I 
